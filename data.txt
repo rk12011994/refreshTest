@@ -1,0 +1,81 @@
+Created Id=68. Reconstructed response body:
+
+ <?xml version="1.0" encoding="UTF-8"?>
+<ns0:Customer xmlns:ns0="http://schema.intuit.com/finance/v3">
+  <ns0:Id>68</ns0:Id>
+  <ns0:SyncToken>0</ns0:SyncToken>
+  <ns0:MetaData>
+    <ns0:CreateTime>2018-11-13T21:10:10-08:00</ns0:CreateTime>
+    <ns0:LastUpdatedTime>2018-11-13T21:10:10-08:00</ns0:LastUpdatedTime>
+  </ns0:MetaData>
+  <ns0:GivenName>qwwqw</ns0:GivenName>
+  <ns0:FamilyName>wqwqwq</ns0:FamilyName>
+  <ns0:FullyQualifiedName>qwwqw wqwqwq 465646</ns0:FullyQualifiedName>
+  <ns0:DisplayName>qwwqw wqwqwq 465646</ns0:DisplayName>
+  <ns0:PrintOnCheckName>qwwqw wqwqwq</ns0:PrintOnCheckName>
+  <ns0:Active>true</ns0:Active>
+  <ns0:PrimaryPhone>
+    <ns0:FreeFormNumber>465646</ns0:FreeFormNumber>
+  </ns0:PrimaryPhone>
+  <ns0:Taxable>true</ns0:Taxable>
+  <ns0:Job>false</ns0:Job>
+  <ns0:BillWithParent>false</ns0:BillWithParent>
+  <ns0:Balance>0</ns0:Balance>
+  <ns0:BalanceWithJobs>0</ns0:BalanceWithJobs>
+  <ns0:CurrencyRef>USD</ns0:CurrencyRef>
+  <ns0:PreferredDeliveryMethod>Print</ns0:PreferredDeliveryMethod>
+</ns0:Customer>
+Created Id=69. Reconstructed response body:
+
+ <?xml version="1.0" encoding="UTF-8"?>
+<ns0:Customer xmlns:ns0="http://schema.intuit.com/finance/v3">
+  <ns0:Id>69</ns0:Id>
+  <ns0:SyncToken>0</ns0:SyncToken>
+  <ns0:MetaData>
+    <ns0:CreateTime>2018-11-13T21:12:04-08:00</ns0:CreateTime>
+    <ns0:LastUpdatedTime>2018-11-13T21:12:04-08:00</ns0:LastUpdatedTime>
+  </ns0:MetaData>
+  <ns0:GivenName>test</ns0:GivenName>
+  <ns0:FamilyName>test</ns0:FamilyName>
+  <ns0:FullyQualifiedName>test test 11111111</ns0:FullyQualifiedName>
+  <ns0:DisplayName>test test 11111111</ns0:DisplayName>
+  <ns0:PrintOnCheckName>test test</ns0:PrintOnCheckName>
+  <ns0:Active>true</ns0:Active>
+  <ns0:PrimaryPhone>
+    <ns0:FreeFormNumber>11111111</ns0:FreeFormNumber>
+  </ns0:PrimaryPhone>
+  <ns0:Taxable>true</ns0:Taxable>
+  <ns0:Job>false</ns0:Job>
+  <ns0:BillWithParent>false</ns0:BillWithParent>
+  <ns0:Balance>0</ns0:Balance>
+  <ns0:BalanceWithJobs>0</ns0:BalanceWithJobs>
+  <ns0:CurrencyRef>USD</ns0:CurrencyRef>
+  <ns0:PreferredDeliveryMethod>Print</ns0:PreferredDeliveryMethod>
+</ns0:Customer>
+Created Id=70. Reconstructed response body:
+
+ <?xml version="1.0" encoding="UTF-8"?>
+<ns0:Customer xmlns:ns0="http://schema.intuit.com/finance/v3">
+  <ns0:Id>70</ns0:Id>
+  <ns0:SyncToken>0</ns0:SyncToken>
+  <ns0:MetaData>
+    <ns0:CreateTime>2018-11-13T21:18:34-08:00</ns0:CreateTime>
+    <ns0:LastUpdatedTime>2018-11-13T21:18:34-08:00</ns0:LastUpdatedTime>
+  </ns0:MetaData>
+  <ns0:GivenName>test</ns0:GivenName>
+  <ns0:FamilyName>test</ns0:FamilyName>
+  <ns0:FullyQualifiedName>test test 222222222</ns0:FullyQualifiedName>
+  <ns0:DisplayName>test test 222222222</ns0:DisplayName>
+  <ns0:PrintOnCheckName>test test</ns0:PrintOnCheckName>
+  <ns0:Active>true</ns0:Active>
+  <ns0:PrimaryPhone>
+    <ns0:FreeFormNumber>222222222</ns0:FreeFormNumber>
+  </ns0:PrimaryPhone>
+  <ns0:Taxable>true</ns0:Taxable>
+  <ns0:Job>false</ns0:Job>
+  <ns0:BillWithParent>false</ns0:BillWithParent>
+  <ns0:Balance>0</ns0:Balance>
+  <ns0:BalanceWithJobs>0</ns0:BalanceWithJobs>
+  <ns0:CurrencyRef>USD</ns0:CurrencyRef>
+  <ns0:PreferredDeliveryMethod>Print</ns0:PreferredDeliveryMethod>
+</ns0:Customer>
