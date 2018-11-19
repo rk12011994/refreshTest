@@ -3,7 +3,7 @@
 namespace App\Helpers;
 use Illuminate\Support\Facades\DB;
 use Request;
-use App\State, App\City, App\Company, App\Blog, App\User, App\SigningRequest;
+use App\State, App\City, App\Company, App\Branch, App\Blog, App\User, App\SigningRequest;
 use Mail ;
 use App\OrderLog;
 use Carbon;
@@ -37,7 +37,11 @@ class Helper
         $dataService->setLogLocation("/Users/PHP/Desktop/newFolderForLog");
         $dataService->throwExceptionOnError(true);
 
-        $customer = Contact::with(['user', 'company', 'branch.State', 'branch.City'])->where('contact_id', $id)->first();
+        $customer = Contact::with(['user', 'branch.company', 'branch.State', 'branch.City'])->where('contact_id', $id)->first();
+
+        if(!isset($customer->branch->qbListID)) {
+            Helper::createBranch($customer->branch->id);
+        }
 
         if (strlen($customer->user->last_name.', '.$customer->user->first_name.' ('.$customer->user->id.')') > 40)
         {
@@ -50,11 +54,11 @@ class Helper
             $name_string = $customer->user->last_name.', '.$customer->user->first_name.' ('.$customer->user->id.')';
         }
 
-        if(strlen($customer->company->company) > 40)
+        if(strlen($customer->branch->company->company) > 40)
         {
-            $company['name'] = substr($customer->company->company,0,40);
+            $company['name'] = substr($customer->branch->company->company,0,40);
         } else {
-            $company['name'] = $customer->company->company;
+            $company['name'] = $customer->branch->company->company;
         }
 
         $theResourceObj = Customer::create([
@@ -74,18 +78,18 @@ class Helper
                 "FreeFormNumber" => $customer->branch->business_no
             ],
             "Mobile" => [
-                "FreeFormNumber" => $customer->mobile_phone
+                "FreeFormNumber" => isset($customer->mobile_phone) ? $customer->mobile_phone : ''
             ],
             "Fax" => [
-                "FreeFormNumber" => $customer->branch->fax_no
+                "FreeFormNumber" => isset($customer->branch->fax_no) ? $customer->branch->fax_no : ''
             ],
             "PrimaryEmailAddr" => [
                 "Address" => $customer->user->email
             ],
-            "PrintOnCheckName" => $customer->user->first_name.' '.$customer->user->last_name/* ,
+            "PrintOnCheckName" => $customer->user->first_name.' '.$customer->user->last_name,
             "CustomerRef" => [
-                "value" => $customer->branch->qbListID
-            ], */
+                "value" => isset($customer->branch->qbListID) ? $customer->branch->qbListID : ''
+            ],
         ]);
 
         $resultingObj = $dataService->Add($theResourceObj);
@@ -150,18 +154,18 @@ class Helper
                 "FreeFormNumber" => $customer->branch->business_no
             ],
             "Mobile" => [
-                "FreeFormNumber" => $customer->mobile_phone
+                "FreeFormNumber" => isset($customer->mobile_phone) ? $customer->mobile_phone : ''
             ],
             "Fax" => [
-                "FreeFormNumber" => $customer->branch->fax_no
+                "FreeFormNumber" => isset($customer->branch->fax_no) ? $customer->branch->fax_no : ''
             ],
             "PrimaryEmailAddr" => [
                 "Address" => $customer->user->email
             ],
-            "PrintOnCheckName" => $customer->user->first_name.' '.$customer->user->last_name/* ,
+            "PrintOnCheckName" => $customer->user->first_name.' '.$customer->user->last_name,
             "CustomerRef" => [
-                "value" => $customer->branch->qbListID
-            ], */
+                "value" => isset($customer->branch->qbListID) ? $customer->branch->qbListID : ''
+            ],
         ]);
 
         $resultingObj = $dataService->Update($theResourceObj);
@@ -281,6 +285,64 @@ class Helper
         $dataService->setLogLocation("/Users/PHP/Desktop/newFolderForLog");
         $dataService->throwExceptionOnError(true);
 
+        $branch = Branch::with(['company', 'State', 'City'])->where('id', $id)->first();
+
+        if(!isset($branch->company->qbListID)) {
+            Helper::createCompany($branch->company->id);
+        }
+
+        if (strlen($branch->City->city.', '.$branch->State->name.' ('.$branch->id.')') > 40)
+        {
+            $len = 40-strlen(' ('.$branch->id.')');
+            $name_string = substr($branch->City->city.', '.$branch->State->name,0,$len).' ('.$branch->id.')';
+        }
+        else
+        {
+            $name_string = $branch->City->city.', '.$branch->State->name.' ('.$branch->id.')';
+        }
+        if(strlen($company['name']) > 40)
+        {
+            $company['name'] = substr($branch->company->company,0,40);
+        } else {
+            $company['name'] = $branch->company->company;
+        }
+
+        $theResourceObj = Customer::create([
+            "DisplayName" => $name_string,
+            "CompanyName" => $company['name'],
+            "BillAddr" => [
+                "Line1" => $company['name'],
+                "Line2" => $branch->address,
+                "City" => $branch->City->city,
+                "Country" => "U.S.A",
+                "CountrySubDivisionCode" => $branch->State->code,
+                "PostalCode" => $branch->zip
+            ],
+            "PrimaryPhone" => [
+                "FreeFormNumber" => $branch->business_no
+            ],
+            "Fax" => [
+                "FreeFormNumber" => isset($branch->fax_no) ? $branch->fax_no : ''
+            ],
+            "PrintOnCheckName" => $company['name'],
+            "CustomerRef" => [
+                "value" => $branch->company->qbListID
+            ],
+        ]);
+
+        $resultingObj = $dataService->Add($theResourceObj);
+        $error = $dataService->getLastError();
+        if ($error) {
+            echo "The Status code is: " . $error->getHttpStatusCode() . "\n";
+            echo "The Helper message is: " . $error->getOAuthHelperError() . "\n";
+            echo "The Response message is: " . $error->getResponseBody() . "\n";
+        }
+        else {
+            $input['qbListID'] = $resultingObj->Id;
+            $branch->update($input);
+            return 1;
+        }
+
     }
 
     public static function updateBranch($qbListID) {
@@ -289,6 +351,60 @@ class Helper
         
         $dataService->setLogLocation("/Users/PHP/Desktop/newFolderForLog");
         $dataService->throwExceptionOnError(true);
+
+        $qbCustomer = $dataService->FindbyId('customer', $qbListID);
+
+        $branch = Branch::with(['company', 'State', 'City'])->where('qbListID', $qbListID)->first();
+
+        if (strlen($branch->City->city.', '.$branch->State->name.' ('.$branch->id.')') > 40)
+        {
+            $len = 40-strlen(' ('.$branch->id.')');
+            $name_string = substr($branch->City->city.', '.$branch->State->name,0,$len).' ('.$branch->id.')';
+        }
+        else
+        {
+            $name_string = $branch->City->city.', '.$branch->State->name.' ('.$branch->id.')';
+        }
+        if(strlen($company['name']) > 40)
+        {
+            $company['name'] = substr($branch->company->company,0,40);
+        } else {
+            $company['name'] = $branch->company->company;
+        }
+
+        $theResourceObj = Customer::create([
+            "DisplayName" => $name_string,
+            "CompanyName" => $company['name'],
+            "BillAddr" => [
+                "Line1" => $company['name'],
+                "Line2" => $branch->address,
+                "City" => $branch->City->city,
+                "Country" => "U.S.A",
+                "CountrySubDivisionCode" => $branch->State->code,
+                "PostalCode" => $branch->zip
+            ],
+            "PrimaryPhone" => [
+                "FreeFormNumber" => $branch->business_no
+            ],
+            "Fax" => [
+                "FreeFormNumber" => isset($branch->fax_no) ? $branch->fax_no : ''
+            ],
+            "PrintOnCheckName" => $company['name'],
+            "CustomerRef" => [
+                "value" => $branch->company->qbListID
+            ],
+        ]);
+
+        $resultingObj = $dataService->Update($theResourceObj);
+        $error = $dataService->getLastError();
+        if ($error) {
+            echo "The Status code is: " . $error->getHttpStatusCode() . "\n";
+            echo "The Helper message is: " . $error->getOAuthHelperError() . "\n";
+            echo "The Response message is: " . $error->getResponseBody() . "\n";
+        }
+        else {
+            return 1;
+        }
 
     }
 
